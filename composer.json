@@ -4,9 +4,12 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/annotations": "^1.12",
+        "doctrine/doctrine-bundle": "^2.2",
+        "doctrine/orm": "^2.8",
         "symfony/console": "5.2.*",
         "symfony/dotenv": "5.2.*",
         "symfony/flex": "^1.3.1",
@@ -14,6 +17,11 @@
         "symfony/yaml": "5.2.*"
     },
     "require-dev": {
+        "doctrine/doctrine-migrations-bundle": "^3.0",
+        "symfony/maker-bundle": "^1.29",
+        "symfony/stopwatch": "^5.2",
+        "symfony/twig-bundle": "^5.2",
+        "symfony/web-profiler-bundle": "5.2.*"
     },
     "config": {
         "optimize-autoloader": true,
