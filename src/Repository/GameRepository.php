@@ -37,6 +37,15 @@ class GameRepository extends ServiceEntityRepository
         }
         return $record;
     }
+
+    public function getByID(int $id):Game
+    {
+        $record= $this->findOneBy(['id'=>$id]);
+        if($record===null){
+            throw new Exception();
+        }
+        return $record;
+    }
 ///**
 //* @return Game[] Returns an array of Game objects
 //*/

@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Game;
 use App\Repository\GameRepository;
-use http\Env\Request;
+use Doctrine\ORM\Query;
+use http\QueryString;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -25,29 +27,36 @@ final class GameControlerController extends AbstractController
     }
 
     /**
-     * @Route(methods={"GET"})
+     * @Route("/getALL",methods={"GET"})
      */
     public function getList(): Response
     {
-        $games = array_map(static function (Game $game):array{
-            return $game->toArray();
-        }, $this->gameRepository->getAll());
+        $params = true;
+        if(!($params)){
+            $games = array_map(static function (Game $game):array{
+                return $game->toArray();
+            }, $this->gameRepository->getAll());
 
-        return new JsonResponse($games);
+            return new JsonResponse($games);
+        }
+        return new Response(var_dump($params));
     }
 
+    /**
+     * @Route("/get",name="game",methods={"GET"})
+     */
+    public function getGame(Request $request): Response
+    {
+        $query = $request->query->get('id');
+        if (!($query)){
+            $games = array_map(static function (Game $game):array{
+                return $game->toArray();
+            }, $this->gameRepository->getAll());
 
+            return new JsonResponse($games);
+        }
+        $response = $this->gameRepository->getByID($query);
+        return new JsonResponse($response->toArray());
+    }
 
-
-
-
-//    /**
-//     * @Route("/game/controler", name="game_controler")
-//     */
-//    public function index(): Response
-//    {
-//        return $this->render('game_controler/index.html.twig', [
-//            'controller_name' => 'GameControlerController',
-//        ]);
-//    }
 }
