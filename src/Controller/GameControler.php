@@ -25,19 +25,7 @@ final class GameControler extends AbstractController
     {
         $this->gameRepository = $gameRepository;
     }
-
-    /**
-     * @Route("/getALL",methods={"GET"})
-     */
-    public function getList(): Response
-    {
-        $games = array_map(static function (Game $game):array{
-            return $game->toArray();
-            }, $this->gameRepository->getAll());
-        return new JsonResponse($games,Response::HTTP_OK);
-
-    }
-
+    
     /**
      * @Route("/get",methods={"GET"})
      */

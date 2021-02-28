@@ -22,6 +22,10 @@ security:
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        get:
+            pattern: ^/api/products/get
+            anonymous: true
+            stateless: true
         api:
             pattern: ^/api
             stateless: true
@@ -38,4 +42,5 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/products/get, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/products/remove, roles: IS_AUTHENTICATED_FULLY }
