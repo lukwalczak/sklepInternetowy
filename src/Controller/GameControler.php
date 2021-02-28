@@ -13,11 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class GameControlerController
+ * Class GameControler
  * @package App\Controller
  * @Route("/api/products")
  */
-final class GameControlerController extends AbstractController
+final class GameControler extends AbstractController
 {
     private GameRepository $gameRepository;
 
@@ -75,6 +75,19 @@ final class GameControlerController extends AbstractController
             ->setPrice($requestJSON['price']);
         $this->gameRepository->addGame($game);
         return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
+    }
 
+    /**
+     * @Route("/delete",methods={"DELETE"})
+     */
+    public function deleteGame(Request $request): Response
+    {
+        $gameJSON = json_decode($request->getContent(), true);
+        $gameID = $this->gameRepository->getByID($gameJSON['id']);
+        if ($gameID){
+            $this->gameRepository->removeGame($gameID);
+            return new JsonResponse(['status'=>'OK','message'=>'Game Removed']);
+        }
+        return new JsonResponse(['status'=>'OK','message'=>'Game not removed due to request problems']);
     }
 }

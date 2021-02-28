@@ -23,22 +23,22 @@ class GameRepository extends ServiceEntityRepository
     /**
      * @return Game[]
      */
-    public function getAll(): array
+    public function getAll(): ?array
     {
         return $this->findAll();
     }
 
 
-    public function getByProductName(string $productName): array
+    public function getByProductName(string $productName): ?array
     {
         $record = $this->findBy(['productName'=>$productName]);
-        if ($record=== null){
-            throw new Exception();
+        if ($record == null){
+            return null;
         }
         return $record;
     }
 
-    public function getByID(int $id):Game
+    public function getByID(int $id): ?Game
     {
         $record= $this->findOneBy(['id'=>$id]);
         if($record===null){
@@ -46,6 +46,19 @@ class GameRepository extends ServiceEntityRepository
         }
         return $record;
     }
+
+    public function addGame(Game $game): void
+    {
+        $this->getEntityManager()->persist($game);
+        $this->getEntityManager()->flush();
+    }
+
+    public function removeGame(Game $game): void
+    {
+        $this->getEntityManager()->remove($game);
+        $this->getEntityManager()->flush();
+    }
+
 ///**
 //* @return Game[] Returns an array of Game objects
 //*/
