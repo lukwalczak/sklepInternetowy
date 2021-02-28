@@ -90,6 +90,27 @@
     "laminas/laminas-zendframework-bridge": {
         "version": "1.2.0"
     },
+    "lcobucci/clock": {
+        "version": "2.0.0"
+    },
+    "lcobucci/jwt": {
+        "version": "4.0.1"
+    },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.5",
+            "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
+        },
+        "files": [
+            "./config/packages/lexik_jwt_authentication.yaml"
+        ]
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
+    },
     "nikic/php-parser": {
         "version": "v4.10.4"
     },
@@ -212,6 +233,9 @@
     "symfony/polyfill-mbstring": {
         "version": "v1.22.1"
     },
+    "symfony/polyfill-php56": {
+        "version": "v1.20.0"
+    },
     "symfony/polyfill-php73": {
         "version": "v1.22.1"
     },
@@ -220,6 +244,12 @@
     },
     "symfony/profiler-pack": {
         "version": "v1.0.5"
+    },
+    "symfony/property-access": {
+        "version": "v5.2.3"
+    },
+    "symfony/property-info": {
+        "version": "v5.2.3"
     },
     "symfony/routing": {
         "version": "5.1",
@@ -234,6 +264,30 @@
             "./config/packages/routing.yaml",
             "./config/routes.yaml"
         ]
+    },
+    "symfony/security-bundle": {
+        "version": "5.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "5.1",
+            "ref": "0a4bae19389d3b9cba1ca0102e3b2bccea724603"
+        },
+        "files": [
+            "./config/packages/security.yaml"
+        ]
+    },
+    "symfony/security-core": {
+        "version": "v5.2.3"
+    },
+    "symfony/security-csrf": {
+        "version": "v5.2.3"
+    },
+    "symfony/security-guard": {
+        "version": "v5.2.3"
+    },
+    "symfony/security-http": {
+        "version": "v5.2.3"
     },
     "symfony/service-contracts": {
         "version": "v2.2.0"

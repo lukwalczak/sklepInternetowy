@@ -31,19 +31,15 @@ final class GameControlerController extends AbstractController
      */
     public function getList(): Response
     {
-        $params = true;
-        if(!($params)){
-            $games = array_map(static function (Game $game):array{
-                return $game->toArray();
+        $games = array_map(static function (Game $game):array{
+            return $game->toArray();
             }, $this->gameRepository->getAll());
+        return new JsonResponse($games);
 
-            return new JsonResponse($games);
-        }
-        return new Response(var_dump($params));
     }
 
     /**
-     * @Route("/get",name="game",methods={"GET"})
+     * @Route("/get",name="index",methods={"GET"})
      */
     public function getGame(Request $request): Response
     {
