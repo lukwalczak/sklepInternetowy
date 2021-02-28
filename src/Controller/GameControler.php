@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class GameControlerController
  * @package App\Controller
- * @Route("/api")
+ * @Route("/api/products")
  */
 final class GameControlerController extends AbstractController
 {
@@ -34,12 +34,12 @@ final class GameControlerController extends AbstractController
         $games = array_map(static function (Game $game):array{
             return $game->toArray();
             }, $this->gameRepository->getAll());
-        return new JsonResponse($games);
+        return new JsonResponse($games,Response::HTTP_OK);
 
     }
 
     /**
-     * @Route("/get",name="index",methods={"GET"})
+     * @Route("/get",methods={"GET"})
      */
     public function getGame(Request $request): Response
     {
@@ -52,7 +52,29 @@ final class GameControlerController extends AbstractController
             return new JsonResponse($games);
         }
         $response = $this->gameRepository->getByID($query);
-        return new JsonResponse($response->toArray());
+        return new JsonResponse($response->toArray(),Response::HTTP_OK);
     }
 
+
+    /**
+     * @Route("/add",methods={"POST"})
+     */
+    public function addGame(Request $request): Response
+    {
+        if(!($request)){
+            return new JsonResponse(['status'=>'OK','message'=>'error empty']);
+        }
+        $requestJSON = json_decode($request->getContent(),true);
+        if ($this->gameRepository->getByProductName($requestJSON['productName'])){
+            return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists']);
+        }
+        $game = new Game();
+        $game->setProductName($requestJSON['productName'])
+            ->setDeveloper($requestJSON['developer'])
+            ->setGenre($requestJSON['genre'])
+            ->setPrice($requestJSON['price']);
+        $this->gameRepository->addGame($game);
+        return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
+
+    }
 }
