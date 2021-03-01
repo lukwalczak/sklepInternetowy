@@ -4,8 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Game;
 use App\Repository\GameRepository;
-use Doctrine\ORM\Query;
-use http\QueryString;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +23,7 @@ final class GameControler extends AbstractController
     {
         $this->gameRepository = $gameRepository;
     }
-    
+
     /**
      * @Route("/get",methods={"GET"})
      */
@@ -52,15 +50,15 @@ final class GameControler extends AbstractController
         if(!($request)){
             return new JsonResponse(['status'=>'OK','message'=>'error empty']);
         }
-        $requestJSON = json_decode($request->getContent(),true);
-        if ($this->gameRepository->getByProductName($requestJSON['productName'])){
+        $requestArray = json_decode($request->getContent(),true);
+        if ($this->gameRepository->getByProductName($requestArray['productName'])){
             return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists']);
         }
         $game = new Game();
-        $game->setProductName($requestJSON['productName'])
-            ->setDeveloper($requestJSON['developer'])
-            ->setGenre($requestJSON['genre'])
-            ->setPrice($requestJSON['price']);
+        $game->setProductName($requestArray['productName'])
+            ->setDeveloper($requestArray['developer'])
+            ->setGenre($requestArray['genre'])
+            ->setPrice($requestArray['price']);
         $this->gameRepository->addGame($game);
         return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
     }
