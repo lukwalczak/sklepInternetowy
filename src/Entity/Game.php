@@ -23,7 +23,7 @@ class Game
     private $productName;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="array")
      */
     private $genre;
 
@@ -54,12 +54,12 @@ class Game
         return $this;
     }
 
-    public function getGenre(): ?string
+    public function getGenre(): ?array
     {
-        return $this->genre;
+        return array_unique($this->genre);
     }
 
-    public function setGenre(string $genre): self
+    public function setGenre(array $genre): self
     {
         $this->genre = $genre;
 

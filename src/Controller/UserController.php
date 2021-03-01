@@ -39,7 +39,6 @@ final class UserController extends AbstractController
         if (!(is_null($this->userRepository->getUserByEmail($requestArray['email'])))) {
             return new JsonResponse(['status'=>'OK','message'=>'user with this email already exists']);
         }
-//        $encryptedPassword = sodium_enc
         $user = new User();
         $user->setEmail($requestArray['email'])
             ->setPassword($this->passwordEncoder->encodePassword($user, $requestArray['password']))

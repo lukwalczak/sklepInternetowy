@@ -114,4 +114,13 @@ class User implements UserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+    public function toArray(): ?array
+    {
+        return [
+            'id'    => $this->id,
+            'email' => $this->email,
+            'roles' => $this->roles,
+        ];
+    }
 }

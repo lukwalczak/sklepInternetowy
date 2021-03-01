@@ -28,9 +28,13 @@ final class AdminController extends AbstractController
     /**
      * @Route("/getUsers",methods={"GET"})
      */
-    public function register(Request $request): Response
+    public function getAllUsers(Request $request): Response
     {
+        $users = array_map(static function (User $user):array{
+            return $user->toArray();
+        }, $this->userRepository->getAllUsers());
 
+        return new JsonResponse($users);
     }
 
 }

@@ -27,7 +27,7 @@ security:
             stateless: true
             anonymous: true
         get:
-            pattern: ^/api/products/
+            pattern: ^/api/products/get
             anonymous: true
         api:
             pattern: ^/api
@@ -47,5 +47,6 @@ security:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/products/get, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/products/remove, roles: IS_AUTHENTICATED_FULLY }
-        - { path: ^/api/admin, roles: ROLE_ADMIN}
+        - { path: ^/api/products/remove, roles: ROLE_ADMIN }
+        - { path: ^/api/products/add, roles: ROLE_ADMIN }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }

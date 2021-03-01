@@ -29,7 +29,7 @@ class GameRepository extends ServiceEntityRepository
     }
 
 
-    public function getByProductName(string $productName): mixed
+    public function getByProductName(string $productName): ?array
     {
         $record = $this->findBy(['productName'=>$productName]);
         if ($record == null){
