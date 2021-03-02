@@ -29,9 +29,9 @@ class GameRepository extends ServiceEntityRepository
     }
 
 
-    public function getByProductName(string $productName): ?array
+    public function getOneByProductName(string $productName): ?Game
     {
-        $record = $this->findBy(['productName'=>$productName]);
+        $record = $this->findOneBy(['productName'=>$productName]);
         if ($record == null){
             return null;
         }
@@ -59,32 +59,16 @@ class GameRepository extends ServiceEntityRepository
         $this->getEntityManager()->flush();
     }
 
-///**
-//* @return Game[] Returns an array of Game objects
-//*/
-//
-//public function findByExampleField($value)
-//{
-//    return $this->createQueryBuilder('g')
-//        ->andWhere('g.exampleField = :val')
-//        ->setParameter('val', $value)
-//        ->orderBy('g.id', 'ASC')
-//        ->setMaxResults(10)
-//        ->getQuery()
-//        ->getResult()
-//        ;
-//}
-
-
-    /*
-    public function findOneBySomeField($value): ?Game
+    public function getByGenre(string $genre): ?array
     {
-        return $this->createQueryBuilder('g')
-            ->andWhere('g.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->setParameter( 'p', $genre)
+            ->select('g')
+            ->from('App:Game','g')
+            ->where('g.genre LIKE :p')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
 }

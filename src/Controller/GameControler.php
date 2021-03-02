@@ -51,7 +51,7 @@ final class GameControler extends AbstractController
             return new JsonResponse(['status'=>'OK','message'=>'error empty']);
         }
         $requestArray = json_decode($request->getContent(),true);
-        if ($this->gameRepository->getByProductName($requestArray['productName'])){
+        if ($this->gameRepository->getOneByProductName($requestArray['productName'])){
             return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists']);
         }
         $game = new Game();
@@ -69,11 +69,24 @@ final class GameControler extends AbstractController
     public function deleteGame(Request $request): Response
     {
         $gameJSON = json_decode($request->getContent(), true);
-        $gameID = $this->gameRepository->getByID($gameJSON['id']);
-        if ($gameID){
-            $this->gameRepository->removeGame($gameID);
-            return new JsonResponse(['status'=>'OK','message'=>'Game Removed']);
+        $gameByID = $this->gameRepository->getByID($gameJSON['id']);
+        $gameByProductName = $this->gameRepository->getOneByProductName($gameJSON['productName']);
+        if ($gameByID == $gameByProductName){
+            $this->gameRepository->removeGame($gameByID);
+            return new JsonResponse(['status'=>'OK','message'=>'Game Removed'],Response::HTTP_OK);
         }
         return new JsonResponse(['status'=>'OK','message'=>'Game not removed due to request problems']);
+    }
+
+    /**
+     * @Route("/get/genre",methods={"GET"})
+     */
+    public function getGameByGenre(Request $request): Response
+    {
+        $genre = $request->query->get('genre');
+        $query = array_map(static function (Game $game):array{
+            return $game->toArray();
+        }, $this->gameRepository->getByGenre($genre));
+        return new JsonResponse($query, Response::HTTP_FOUND);
     }
 }
