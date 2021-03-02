@@ -35,7 +35,7 @@ final class GameControler extends AbstractController
                 return $game->toArray();
             }, $this->gameRepository->getAll());
 
-            return new JsonResponse($games);
+            return new JsonResponse($games,Response::HTTP_OK);
         }
         $response = $this->gameRepository->getByID($query);
         return new JsonResponse($response->toArray(),Response::HTTP_OK);
@@ -52,7 +52,7 @@ final class GameControler extends AbstractController
         }
         $requestArray = json_decode($request->getContent(),true);
         if ($this->gameRepository->getOneByProductName($requestArray['productName'])){
-            return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists']);
+            return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists'],Response::HTTP_OK);
         }
         $game = new Game();
         $game->setProductName($requestArray['productName'])
@@ -87,6 +87,6 @@ final class GameControler extends AbstractController
         $query = array_map(static function (Game $game):array{
             return $game->toArray();
         }, $this->gameRepository->getByGenre($genre));
-        return new JsonResponse($query, Response::HTTP_FOUND);
+        return new JsonResponse($query, Response::HTTP_OK);
     }
 }

@@ -30,11 +30,16 @@ final class AdminController extends AbstractController
      */
     public function getAllUsers(Request $request): Response
     {
-        $users = array_map(static function (User $user):array{
-            return $user->toArray();
-        }, $this->userRepository->getAllUsers());
+        $query = $request->query->get('id');
+        if (!($query)){
+            $users = array_map(static function (User $user):array{
+                return $user->toArray();
+            }, $this->userRepository->getAllUsers());
 
-        return new JsonResponse($users);
+            return new JsonResponse($users,Response::HTTP_OK);
+        }
+        $user = $this->userRepository->getUserByID($query);
+        return new JsonResponse($user->toArray(),Response::HTTP_OK);
     }
 
 }
