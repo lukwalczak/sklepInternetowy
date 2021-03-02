@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class UserControler
+ * Class AdminController
  * @package App\Controller
- * @Route("/api/admin")
+ * @Route("/admin")
  */
 final class AdminController extends AbstractController
 {
@@ -26,20 +26,23 @@ final class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/getUsers",methods={"GET"})
+     * @Route("/users/{userID}",methods={"GET"})
      */
-    public function getAllUsers(Request $request): Response
+    public function admin(?int $userID): Response
     {
-        $query = $request->query->get('id');
-        if (!($query)){
-            $users = array_map(static function (User $user):array{
-                return $user->toArray();
-            }, $this->userRepository->getAllUsers());
-
-            return new JsonResponse($users,Response::HTTP_OK);
-        }
-        $user = $this->userRepository->getUserByID($query);
+        $user = $this->userRepository->getUserByID($userID);
         return new JsonResponse($user->toArray(),Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/users",methods={"GET"})
+     */
+    public function getUsers(): Response
+    {
+        $users = array_map(static function (User $user):array{
+            return $user->toArray();
+            }, $this->userRepository->getAllUsers());
+        return new JsonResponse($users,Response::HTTP_OK);
     }
 
 }

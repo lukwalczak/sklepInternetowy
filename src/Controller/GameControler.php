@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class GameControler
  * @package App\Controller
- * @Route("/api/products")
+ * @Route("/products")
  */
 final class GameControler extends AbstractController
 {
@@ -41,6 +41,17 @@ final class GameControler extends AbstractController
         return new JsonResponse($response->toArray(),Response::HTTP_OK);
     }
 
+    /**
+     * @Route("/genre",methods={"GET"})
+     */
+    public function getGameByGenre(Request $request): Response
+    {
+        $genre = $request->query->get('genre');
+        $query = array_map(static function (Game $game):array{
+            return $game->toArray();
+        }, $this->gameRepository->getByGenre($genre));
+        return new JsonResponse($query, Response::HTTP_OK);
+    }
 
     /**
      * @Route("/add",methods={"POST"})
@@ -68,9 +79,9 @@ final class GameControler extends AbstractController
      */
     public function deleteGame(Request $request): Response
     {
-        $gameJSON = json_decode($request->getContent(), true);
-        $gameByID = $this->gameRepository->getByID($gameJSON['id']);
-        $gameByProductName = $this->gameRepository->getOneByProductName($gameJSON['productName']);
+        $gameArray = json_decode($request->getContent(), true);
+        $gameByID = $this->gameRepository->getByID($gameArray['id']);
+        $gameByProductName = $this->gameRepository->getOneByProductName($gameArray['productName']);
         if ($gameByID == $gameByProductName){
             $this->gameRepository->removeGame($gameByID);
             return new JsonResponse(['status'=>'OK','message'=>'Game Removed'],Response::HTTP_OK);
@@ -78,15 +89,13 @@ final class GameControler extends AbstractController
         return new JsonResponse(['status'=>'OK','message'=>'Game not removed due to request problems']);
     }
 
+
     /**
-     * @Route("/get/genre",methods={"GET"})
+     * @Route("/update",methods={"PATCH"})
      */
-    public function getGameByGenre(Request $request): Response
+    public function patchGame(Request $request): Response
     {
-        $genre = $request->query->get('genre');
-        $query = array_map(static function (Game $game):array{
-            return $game->toArray();
-        }, $this->gameRepository->getByGenre($genre));
-        return new JsonResponse($query, Response::HTTP_OK);
+        $requestArray = json_decode($request->getContent(), true);
+
     }
 }

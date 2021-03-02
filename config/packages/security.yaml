@@ -15,22 +15,28 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         login:
-            pattern: ^/api/login
+            pattern: ^/login
             stateless: true
             anonymous: true
             json_login:
-                check_path: /api/login_check
+                check_path: /login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
         register:
-            pattern: ^/api/register
+            pattern: ^/register
             stateless: true
             anonymous: true
         get:
-            pattern: ^/api/products/get*
+            pattern: ^/products/get*
             anonymous: true
         api:
-            pattern: ^/api
+            pattern: ^/restricted
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        admin:
+            pattern: ^/admin
             stateless: true
             guard:
                 authenticators:
@@ -40,14 +46,10 @@ security:
             lazy: true
             provider: app_user_provider
 
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/products/get, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/products/gettags, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/products/delete, roles: ROLE_ADMIN }
-        - { path: ^/api/products/add, roles: ROLE_ADMIN }
-        - { path: ^/api/admin, roles: ROLE_ADMIN }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/products/delete, roles: ROLE_ADMIN }
+        - { path: ^/products/add, roles: ROLE_ADMIN }
+        - { path: ^/products/^, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
