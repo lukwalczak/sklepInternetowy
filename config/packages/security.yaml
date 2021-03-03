@@ -36,7 +36,7 @@ security:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
         admin:
-            pattern: ^/admin
+            pattern: ^(/admin)|(/products/add)|(/products/delete)
             stateless: true
             guard:
                 authenticators:

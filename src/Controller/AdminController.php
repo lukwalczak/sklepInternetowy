@@ -3,8 +3,10 @@
 
 namespace App\Controller;
 
+use App\Exceptions\UserNotFoundException;
 use App\Repository\UserRepository;
 use App\Entity\User;
+use http\Exception\BadMethodCallException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +33,11 @@ final class AdminController extends AbstractController
     public function admin(?int $userID): Response
     {
         $user = $this->userRepository->getUserByID($userID);
+        if(!($user))
+        {
+            return new JsonResponse(['status'=>'OK','message'=>'User does not exist'],
+                Response::HTTP_NOT_FOUND);
+        }
         return new JsonResponse($user->toArray(),Response::HTTP_OK);
     }
 

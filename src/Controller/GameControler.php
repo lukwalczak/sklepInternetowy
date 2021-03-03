@@ -62,6 +62,11 @@ final class GameControler extends AbstractController
             return new JsonResponse(['status'=>'OK','message'=>'error empty']);
         }
         $requestArray = json_decode($request->getContent(),true);
+        $diff = array_diff(array_keys($requestArray),['productName','price','genre','developer']);
+        if (!(empty($diff)))
+        {
+            return new JsonResponse(['status'=>'OK','message'=>'Wrong column names'],Response::HTTP_BAD_REQUEST);
+        }
         if ($this->gameRepository->getOneByProductName($requestArray['productName'])){
             return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists'],Response::HTTP_OK);
         }
@@ -88,7 +93,6 @@ final class GameControler extends AbstractController
         }
         return new JsonResponse(['status'=>'OK','message'=>'Game not removed due to request problems']);
     }
-
 
     /**
      * @Route("/update",methods={"PATCH"})
