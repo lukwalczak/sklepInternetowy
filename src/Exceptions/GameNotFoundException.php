@@ -3,13 +3,10 @@
 
 namespace App\Exceptions;
 
-
-use http\Exception\InvalidArgumentException;
-
-class GameNotFoundException extends InvalidArgumentException
+final class GameNotFoundException extends \InvalidArgumentException
 {
-    public function __construct(int $id)
+    public function __construct()
     {
-        parent::__construct(`Game with ${id} not found`);
+        parent::__construct("Game not found");
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Exceptions\UserNotFoundException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -44,7 +45,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getUserByID(int $id): ?User
     {
-        return $this->findOneBy(['id'=>$id]);
+        $user = $this->findOneBy(['id'=>$id]);
+        if ($user===null){
+            throw new UserNotFoundException();
+        }
+        return $user;
     }
 
     /**
@@ -61,15 +66,27 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getUserByEmail(string $email): ?User
     {
-        return $this->findOneBy(['email'=>$email]);
+        $user = $this->findOneBy(['email'=>$email]);
+        if ($user===null){
+            throw new UserNotFoundException();
+        }
+        return $user;
     }
 
+    /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
     public function newUser(User $user): void
     {
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
 
+    /**
+     * @param User $user
+     */
     public function removeUser(User $user): void
     {
         try {
@@ -80,7 +97,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
     }
 
-    public function getUserID(string $email)
+    /**
+     * @param string $email
+     * @return int
+     */
+    public function getUserID(string $email): array
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -92,6 +113,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * @param User $user
+     */
     public function updateUser(User $user): void
     {
         try {

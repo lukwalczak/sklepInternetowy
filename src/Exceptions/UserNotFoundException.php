@@ -3,13 +3,10 @@
 
 namespace App\Exceptions;
 
-
-use http\Exception\InvalidArgumentException;
-
-class UserNotFoundException extends InvalidArgumentException
+final class UserNotFoundException extends \InvalidArgumentException
 {
-    public function __construct(int $id)
+    public function __construct()
     {
-        parent::__construct(`User with ${id} not Found`);
+        parent::__construct("User not found");
     }
 }

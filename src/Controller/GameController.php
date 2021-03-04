@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Game;
 use App\Exceptions\GameNotFoundException;
-use App\Exceptions\InvalidRequestParametersException;
 use App\Repository\GameRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -30,18 +28,28 @@ final class GameController extends AbstractController
     /**
      * @Route("/get",methods={"GET"})
      */
-    public function getGame(Request $request): Response
+    public function getGame(): Response
     {
-        $query = $request->query->get('id');
-        if (!($query)){
-            $games = array_map(static function (Game $game):array{
-                return $game->toArray();
+        $games = array_map(static function (Game $game):array{
+            return $game->toArray();
             }, $this->gameRepository->getAll());
 
-            return new JsonResponse($games,Response::HTTP_OK);
+        return new JsonResponse($games,Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/get/{id}",methods={"GET"})
+     * @param int $id
+     * @return Response
+     */
+    public function getGameByID(int $id): Response
+    {
+        try {
+            $game = $this->gameRepository->getByID($id);
+        }catch (GameNotFoundException $e){
+            return new JsonResponse(['message'=>$e->getMessage()],Response::HTTP_NOT_FOUND);
         }
-        $response = $this->gameRepository->getByID($query);
-        return new JsonResponse($response->toArray(),Response::HTTP_OK);
+        return new JsonResponse($game->toArray(),Response::HTTP_OK);
     }
 
     /**
