@@ -3,19 +3,22 @@
 namespace App\Controller;
 
 use App\Entity\Game;
+use App\Exceptions\GameNotFoundException;
+use App\Exceptions\InvalidRequestParametersException;
 use App\Repository\GameRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class GameControler
+ * Class GameController
  * @package App\Controller
  * @Route("/products")
  */
-final class GameControler extends AbstractController
+final class GameController extends AbstractController
 {
     private GameRepository $gameRepository;
 
@@ -100,6 +103,12 @@ final class GameControler extends AbstractController
     public function patchGame(Request $request): Response
     {
         $requestArray = json_decode($request->getContent(), true);
+        $diff = array_diff(array_keys($requestArray),['id','productName','price']);
+        if (!empty($diff))
+        {
+            return new JsonResponse(['status'=>'OK','message'=>'Request rejected'],
+                Response::HTTP_BAD_REQUEST);
+        }
 
     }
 }

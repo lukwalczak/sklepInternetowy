@@ -47,4 +47,21 @@ final class UserController extends AbstractController
         return new JsonResponse(['status'=>'OK','message'=>'registred new user'],Response::HTTP_CREATED);
     }
 
+    /**
+     * @Route("/restore",methods={"PATCH"})
+     */
+    public function restorePassword(Request $request): Response
+    {
+        $requestArray = json_decode($request->getContent(),true);
+        $user = $this->userRepository->getUserByEmail($requestArray['username']);
+        if (is_null($user))
+        {
+            return new JsonResponse(['status'=>'Error',
+                'message'=>'Request was not processed due to request problems'],
+                Response::HTTP_BAD_REQUEST);
+        }
+        $user->setPassword($this->passwordEncoder->encodePassword($user,$requestArray['password']));
+        $this->userRepository->updateUser($user);
+        return new JsonResponse(['status'=>'OK','message'=>'Password reseted'],Response::HTTP_OK);
+    }
 }
