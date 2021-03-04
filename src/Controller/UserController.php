@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Exceptions\UserNotFoundException;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,15 +37,17 @@ final class UserController extends AbstractController
     public function register(Request $request): Response
     {
         $requestArray = json_decode($request->getContent(), true);
-        if (!(is_null($this->userRepository->getUserByEmail($requestArray['email'])))) {
+        try {
+            $this->userRepository->getUserByEmail($requestArray['email']);
             return new JsonResponse(['status'=>'OK','message'=>'user with this email already exists']);
+        }catch (UserNotFoundException $exception){
+            $user = new User();
+            $user->setEmail($requestArray['email'])
+                ->setPassword($this->passwordEncoder->encodePassword($user, $requestArray['password']))
+                ->setRoles(['ROLE_USER']);
+            $this->userRepository->newUser($user);
+            return new JsonResponse(['status'=>'OK','message'=>'registred new user'],Response::HTTP_CREATED);
         }
-        $user = new User();
-        $user->setEmail($requestArray['email'])
-            ->setPassword($this->passwordEncoder->encodePassword($user, $requestArray['password']))
-            ->setRoles(['ROLE_USER']);
-        $this->userRepository->newUser($user);
-        return new JsonResponse(['status'=>'OK','message'=>'registred new user'],Response::HTTP_CREATED);
     }
 
     /**

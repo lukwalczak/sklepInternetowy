@@ -17,25 +17,28 @@ class Order
      * @ORM\Column(type="integer")
      */
     private $id;
+
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $userID;
+    private $user;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserID(): ?int
+    public function getUser(): ?User
     {
-        return $this->userID;
+        return $this->user;
     }
 
-    public function setUserID(int $userID): self
+    public function setUser(?User $user): self
     {
-        $this->userID = $userID;
+        $this->user = $user;
 
         return $this;
     }
+
 }

@@ -28,10 +28,10 @@ final class AdminController extends AbstractController
     /**
      * @Route("/users/{userID}",methods={"GET"})
      */
-    public function getUserByID(?int $userID): Response
+    public function getUserByID(?int $id): Response
     {
         try {
-            $user = $this->userRepository->getUserByID($userID);
+            $user = $this->userRepository->getUserByID($id);
         }catch (UserNotFoundException $e){
             return new JsonResponse(['message'=>$e->getMessage()],Response::HTTP_NOT_FOUND);
         }
