@@ -30,7 +30,7 @@ security:
             pattern: ^/products/get*
             anonymous: true
         api:
-            pattern: ^/restricted
+            pattern: ^/orders
             stateless: true
             guard:
                 authenticators:
@@ -52,4 +52,5 @@ security:
         - { path: ^/products/delete, roles: ROLE_ADMIN }
         - { path: ^/products/add, roles: ROLE_ADMIN }
         - { path: ^/products/^, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/orders^, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }

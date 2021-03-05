@@ -67,4 +67,5 @@ final class UserController extends AbstractController
         $this->userRepository->updateUser($user);
         return new JsonResponse(['status'=>'OK','message'=>'Password reseted'],Response::HTTP_OK);
     }
+
 }
