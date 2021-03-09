@@ -5,6 +5,7 @@ namespace App\Controller;
 
 
 use App\Entity\Order;
+use App\Exceptions\GameNotFoundException;
 use App\Repository\GameRepository;
 use App\Repository\OrderRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,10 +36,15 @@ class OrderController
         $user = $this->security->getUser();
         $order->setUser($user);
         foreach ($requestArray['game'] as $gameID) {
-            $game = $this->gameRepository->getByID($gameID);
-            $order->addGame($game);
+            try {
+                $game = $this->gameRepository->getByID($gameID);
+                $order->addGame($game);
+            }catch (GameNotFoundException $e)
+            {
+                return new JsonResponse(['message'=>'Something went wrong'],Response::HTTP_BAD_REQUEST);
+            }
         }
         $this->orderRepository->addOrder($order);
-        return new JsonResponse(['message'=>$user->getUsername()."thanks for ordering".$requestArray['game']],Response::HTTP_OK);
+        return new JsonResponse(['message'=>$user->getUsername()." thanks for your order"],Response::HTTP_OK);
     }
 }
