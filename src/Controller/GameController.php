@@ -76,7 +76,7 @@ final class GameController extends AbstractController
         $diff = array_diff(array_keys($requestArray),['productName','price','genre','developer','description','imageURL']);
         if (!(empty($diff)))
         {
-            return new JsonResponse(['status'=>'OK','message'=>'Wrong column names'],Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['status'=>'FAILED','message'=>'Wrong column names'],Response::HTTP_BAD_REQUEST);
         }
         try {
             $exists = $this->gameRepository->getOneByProductName($requestArray['productName']);
@@ -92,7 +92,7 @@ final class GameController extends AbstractController
             $this->gameRepository->addGame($game);
             return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
         }
-        return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists'],Response::HTTP_OK);
+        return new JsonResponse(['status'=>'FAILED','message'=>'Game with this name already exists'],Response::HTTP_OK);
     }
 
     /**
@@ -107,7 +107,7 @@ final class GameController extends AbstractController
             $this->gameRepository->removeGame($gameByID);
             return new JsonResponse(['status'=>'OK','message'=>'Game Removed'],Response::HTTP_OK);
         }
-        return new JsonResponse(['status'=>'OK','message'=>'Game not removed due to request problems']);
+        return new JsonResponse(['status'=>'FAILED','message'=>'Game not removed due to request problems']);
     }
 
     /**
@@ -119,7 +119,7 @@ final class GameController extends AbstractController
         $diff = array_diff(array_keys($requestArray),['id','productName','price']);
         if (!empty($diff))
         {
-            return new JsonResponse(['status'=>'OK','message'=>'Request rejected'],
+            return new JsonResponse(['status'=>'FAILED','message'=>'Request rejected'],
                 Response::HTTP_BAD_REQUEST);
         }
 
