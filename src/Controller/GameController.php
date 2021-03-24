@@ -73,21 +73,26 @@ final class GameController extends AbstractController
             return new JsonResponse(['status'=>'OK','message'=>'error empty']);
         }
         $requestArray = json_decode($request->getContent(),true);
-        $diff = array_diff(array_keys($requestArray),['productName','price','genre','developer']);
+        $diff = array_diff(array_keys($requestArray),['productName','price','genre','developer','description','imageURL']);
         if (!(empty($diff)))
         {
             return new JsonResponse(['status'=>'OK','message'=>'Wrong column names'],Response::HTTP_BAD_REQUEST);
         }
-        if ($this->gameRepository->getOneByProductName($requestArray['productName'])){
-            return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists'],Response::HTTP_OK);
+        try {
+            $exists = $this->gameRepository->getOneByProductName($requestArray['productName']);
+        }catch (GameNotFoundException $e)
+        {
+            $game = new Game();
+            $game->setProductName($requestArray['productName'])
+                ->setDeveloper($requestArray['developer'])
+                ->setGenre($requestArray['genre'])
+                ->setPrice($requestArray['price'])
+                ->setDescription($requestArray['description'])
+                ->setImageURL($requestArray['imageURL']);
+            $this->gameRepository->addGame($game);
+            return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
         }
-        $game = new Game();
-        $game->setProductName($requestArray['productName'])
-            ->setDeveloper($requestArray['developer'])
-            ->setGenre($requestArray['genre'])
-            ->setPrice($requestArray['price']);
-        $this->gameRepository->addGame($game);
-        return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
+        return new JsonResponse(['status'=>'OK','message'=>'Game with this name already exists'],Response::HTTP_OK);
     }
 
     /**
