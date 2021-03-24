@@ -88,7 +88,8 @@ final class GameController extends AbstractController
                 ->setGenre($requestArray['genre'])
                 ->setPrice($requestArray['price'])
                 ->setDescription($requestArray['description'])
-                ->setImageURL($requestArray['imageURL']);
+                ->setImageURL($requestArray['imageURL'])
+                ->setShortDescription($requestArray['shortDescription']);
             $this->gameRepository->addGame($game);
             return new JsonResponse(['status'=>'OK','message'=>'created'],Response::HTTP_CREATED);
         }

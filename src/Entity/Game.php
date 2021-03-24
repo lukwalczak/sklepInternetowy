@@ -45,7 +45,7 @@ class Game
     private $orders;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=150, nullable=true)
      */
     private $description;
 
@@ -53,6 +53,11 @@ class Game
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $imageURL;
+
+    /**
+     * @ORM\Column(type="string", length=510, nullable=true)
+     */
+    private $shortDescription;
 
     public function __construct()
     {
@@ -122,6 +127,7 @@ class Game
             'developer' => $this->developer,
             'description' => $this->description,
             'imageURL' => $this->imageURL,
+            'shortDescription' => $this->shortDescription,
         ];
     }
 
@@ -172,6 +178,18 @@ class Game
     public function setImageURL(?string $imageURL): self
     {
         $this->imageURL = $imageURL;
+
+        return $this;
+    }
+
+    public function getShortDescription(): ?string
+    {
+        return $this->shortDescription;
+    }
+
+    public function setShortDescription(?string $shortDescription): self
+    {
+        $this->shortDescription = $shortDescription;
 
         return $this;
     }
