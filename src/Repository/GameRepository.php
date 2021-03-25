@@ -95,7 +95,7 @@ class GameRepository extends ServiceEntityRepository
     /**
      * @param Game $game
      */
-    public function updateUser(Game $game): void
+    public function updateGame(Game $game): void
     {
         $this->getEntityManager()->persist($game);
         $this->getEntityManager()->flush();

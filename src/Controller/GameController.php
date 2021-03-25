@@ -123,6 +123,21 @@ final class GameController extends AbstractController
             return new JsonResponse(['status'=>'FAILED','message'=>'Request rejected'],
                 Response::HTTP_BAD_REQUEST);
         }
-
+        try {
+            $game = $this->gameRepository->getByID($requestArray['id']);
+            $p = $this->gameRepository->getOneByProductName($requestArray['productName']);
+        }catch (GameNotFoundException $e)
+        {
+            return new JsonResponse(['status'=>'FAILED','message'=>'Request rejected'],
+                Response::HTTP_BAD_REQUEST);
+        }
+        if($game !== $p)
+        {
+            return new JsonResponse(['status'=>'FAILED','message'=>'Request rejected'],
+                Response::HTTP_BAD_REQUEST);
+        }
+        $game->setPrice($requestArray['price']);
+        $this->gameRepository->updateGame($game);
+        return new JsonResponse(['status'=>'UPDATED'],Response::HTTP_OK);
     }
 }
