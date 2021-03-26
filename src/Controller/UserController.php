@@ -39,7 +39,7 @@ final class UserController extends AbstractController
         $requestArray = json_decode($request->getContent(), true);
         try {
             $this->userRepository->getUserByEmail($requestArray['email']);
-            return new JsonResponse(['status'=>'OK','message'=>'user with this email already exists']);
+            return new JsonResponse(['status'=>'ERROR','message'=>'user with this email already exists']);
         }catch (UserNotFoundException $exception){
             $user = new User();
             $user->setEmail($requestArray['email'])
@@ -59,13 +59,13 @@ final class UserController extends AbstractController
         $user = $this->userRepository->getUserByEmail($requestArray['username']);
         if (is_null($user))
         {
-            return new JsonResponse(['status'=>'Error',
+            return new JsonResponse(['status'=>'ERROR',
                 'message'=>'Request was not processed due to request problems'],
                 Response::HTTP_BAD_REQUEST);
         }
         $user->setPassword($this->passwordEncoder->encodePassword($user,$requestArray['password']));
         $this->userRepository->updateUser($user);
-        return new JsonResponse(['status'=>'OK','message'=>'Password reseted'],Response::HTTP_OK);
+        return new JsonResponse(['status'=>'OK','message'=>'Password changed'],Response::HTTP_OK);
     }
 
 }
