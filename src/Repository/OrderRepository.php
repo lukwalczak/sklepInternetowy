@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use App\Entity\Game;
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -23,5 +26,19 @@ class OrderRepository extends ServiceEntityRepository
     {
         $this->getEntityManager()->persist($order);
         $this->getEntityManager()->flush();
+    }
+
+    public function getUserOrders(int $id): ?array
+    {
+        return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->setParameter('p',$id)
+                ->select('o.id orderID','u.id userID','g.productName','g.id gameID')
+                ->from('App:Order','o')
+                ->Join('o.user','u')
+                ->join('o.games','g')
+                ->where('u.id = :p')
+                ->getQuery()
+                ->getResult();
     }
 }

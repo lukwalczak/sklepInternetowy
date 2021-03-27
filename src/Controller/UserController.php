@@ -39,7 +39,7 @@ final class UserController extends AbstractController
         $requestArray = json_decode($request->getContent(), true);
         try {
             $this->userRepository->getUserByEmail($requestArray['email']);
-            return new JsonResponse(['status'=>'ERROR','message'=>'user with this email already exists']);
+            return new JsonResponse(['status'=>'ERROR','message'=>'user with this email already exists'],Response::HTTP_BAD_REQUEST);
         }catch (UserNotFoundException $exception){
             $user = new User();
             $user->setEmail($requestArray['email'])

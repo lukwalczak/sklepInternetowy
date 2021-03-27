@@ -83,4 +83,13 @@ class Order
         return $this;
     }
 
+    public function toArray(): ?array
+    {
+        return [
+            'id'    => $this->id,
+            'game' => $this->game,
+            'games' => $this->games,
+            'user' => $this->user
+        ];
+    }
 }

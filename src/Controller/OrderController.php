@@ -8,26 +8,34 @@ use App\Entity\Order;
 use App\Exceptions\GameNotFoundException;
 use App\Repository\GameRepository;
 use App\Repository\OrderRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * Class OrderController
+ * @package App\Controller
+ * @Route("/orders")
+ */
 class OrderController
 {
     private $security;
     private OrderRepository $orderRepository;
+    private UserRepository $userRepository;
 
-    public function __construct(Security $security, OrderRepository $orderRepository, GameRepository $gameRepository)
+    public function __construct(Security $security, OrderRepository $orderRepository, GameRepository $gameRepository, UserRepository $userRepository)
     {
         $this->security = $security;
         $this->orderRepository = $orderRepository;
         $this->gameRepository = $gameRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
-     * @Route("/orders/new",methods={"POST"})
+     * @Route("/new",methods={"POST"})
      */
     public function newOrder(Request $request): Response
     {
@@ -46,5 +54,17 @@ class OrderController
         }
         $this->orderRepository->addOrder($order);
         return new JsonResponse(['message'=>$user->getUsername()." thanks for your order"],Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/",methods={"GET"})
+     */
+    public function getOrders(): Response
+    {
+        $user = $this->security->getUser()->getUsername();
+        $id = $this->userRepository->getUserByEmail($user)->getId();
+        $orders = $this->orderRepository->getUserOrders($id);
+
+        return new JsonResponse($orders,Response::HTTP_OK);
     }
 }
