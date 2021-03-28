@@ -29,7 +29,13 @@ security:
         get:
             pattern: ^/products/get*
             anonymous: true
-        api:
+        profile:
+            pattern: ^/userData
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        orders:
             pattern: ^/orders
             stateless: true
             guard:
@@ -53,4 +59,5 @@ security:
         - { path: ^/products/add, roles: ROLE_ADMIN }
         - { path: ^/products/^, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/orders^, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/userData^, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/admin, roles: ROLE_ADMIN }

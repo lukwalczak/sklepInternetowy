@@ -13,9 +13,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
- * Class UserControler
+ * Class UserController
  * @package App\Controller
  * @Route("/")
  */
@@ -25,10 +26,13 @@ final class UserController extends AbstractController
 
     private UserPasswordEncoder $passwordEncoder;
 
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder)
+    private Security $security;
+
+    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, Security $security)
     {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
+        $this->security = $security;
     }
 
     /**
@@ -68,4 +72,13 @@ final class UserController extends AbstractController
         return new JsonResponse(['status'=>'OK','message'=>'Password changed'],Response::HTTP_OK);
     }
 
+    /**
+     * @Route("/userData",methods={"GET"})
+     */
+    public function getUserInformation(): Response
+    {
+        $userUsername = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($userUsername)->toArray();
+        return new JsonResponse($user,Response::HTTP_OK);
+    }
 }
