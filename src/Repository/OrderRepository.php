@@ -33,7 +33,7 @@ class OrderRepository extends ServiceEntityRepository
         return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->setParameter('p',$id)
-                ->select('o.id orderID','u.id userID','g.productName','g.id gameID')
+                ->select('o.id orderID','g.imageURL url','g.id gameID')
                 ->from('App:Order','o')
                 ->Join('o.user','u')
                 ->join('o.games','g')
