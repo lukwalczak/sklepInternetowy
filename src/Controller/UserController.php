@@ -3,7 +3,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
 use App\Exceptions\UserNotFoundException;
+use App\Repository\CartRepository;
+use App\Repository\GameRepository;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,15 +27,22 @@ final class UserController extends AbstractController
 {
     private UserRepository $userRepository;
 
+    private CartRepository $cartRepository;
+
     private UserPasswordEncoder $passwordEncoder;
 
     private Security $security;
 
-    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder, Security $security)
+    private GameRepository $gameRepository;
+
+    public function __construct(UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder,
+                                Security $security, CartRepository $cartRepository, GameRepository $gameRepository)
     {
         $this->userRepository = $userRepository;
         $this->passwordEncoder = $passwordEncoder;
         $this->security = $security;
+        $this->cartRepository = $cartRepository;
+        $this->gameRepository = $gameRepository;
     }
 
     /**
@@ -80,5 +90,68 @@ final class UserController extends AbstractController
         $userUsername = $this->security->getUser()->getUsername();
         $user = $this->userRepository->getUserByEmail($userUsername)->toArray();
         return new JsonResponse($user,Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/userData/cart/new",methods={"POST"})
+     */
+    public function addUserCart(): Response
+    {
+        $username = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($username);
+        $cart = new Cart();
+        $cart->setUser($user);
+        if(!$user->getCart())
+        {
+            $this->cartRepository->newCart($cart);
+        }
+        return new JsonResponse( Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/userData/cart/add",methods={"POST"})
+     */
+    public function addToCart(Request $request): Response
+    {
+        $requestArray = json_decode($request->getContent(), true);
+        $username = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($username);
+        $cart = $user->getCart();
+        foreach ($requestArray['games'] as $gameID)
+        {
+            $game = $this->gameRepository->getByID($gameID);
+            $cart->addGame($game);
+        }
+        $this->cartRepository->newCart($cart);
+        return new JsonResponse(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @Route("/userData/cart",methods={"GET"})
+     */
+    public function getUserCart():Response
+    {
+        $username = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($username);
+        $cart = $this->cartRepository->getUserCart($user);
+        $arr = [];
+        foreach ($cart[0]['games'] as $game)
+        {
+            array_push($arr,$game['id']);
+        }
+        return new JsonResponse($arr,Response::HTTP_OK);
+    }
+    /**
+     * @Route("/userData/cart/remove/{id}",methods={"DELETE"})
+     */
+    public function removeFromCart(int $id): Response
+    {
+        $username = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($username);
+        $cart = $user->getCart();
+        $game = $this->gameRepository->getByID($id);
+        $cart->removeGame($game);
+        $this->cartRepository->newCart($cart);
+        return new JsonResponse($cart,Response::HTTP_OK);
     }
 }

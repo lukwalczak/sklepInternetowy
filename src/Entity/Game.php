@@ -59,9 +59,15 @@ class Game
      */
     private $shortDescription;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Cart::class, mappedBy="games")
+     */
+    private $carts;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->carts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -190,6 +196,33 @@ class Game
     public function setShortDescription(?string $shortDescription): self
     {
         $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Cart[]
+     */
+    public function getCarts(): Collection
+    {
+        return $this->carts;
+    }
+
+    public function addCart(Cart $cart): self
+    {
+        if (!$this->carts->contains($cart)) {
+            $this->carts[] = $cart;
+            $cart->addGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCart(Cart $cart): self
+    {
+        if ($this->carts->removeElement($cart)) {
+            $cart->removeGame($this);
+        }
 
         return $this;
     }
