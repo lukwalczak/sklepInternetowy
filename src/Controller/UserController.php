@@ -93,22 +93,6 @@ final class UserController extends AbstractController
     }
 
     /**
-     * @Route("/userData/cart/new",methods={"POST"})
-     */
-    public function addUserCart(): Response
-    {
-        $username = $this->security->getUser()->getUsername();
-        $user = $this->userRepository->getUserByEmail($username);
-        $cart = new Cart();
-        $cart->setUser($user);
-        if(!$user->getCart())
-        {
-            $this->cartRepository->newCart($cart);
-        }
-        return new JsonResponse( Response::HTTP_CREATED);
-    }
-
-    /**
      * @Route("/userData/cart/add",methods={"POST"})
      */
     public function addToCart(Request $request): Response
@@ -134,6 +118,12 @@ final class UserController extends AbstractController
         $username = $this->security->getUser()->getUsername();
         $user = $this->userRepository->getUserByEmail($username);
         $cart = $this->cartRepository->getUserCart($user);
+        if (!($cart)){
+            $cart = new Cart();
+            $cart->setUser($user);
+            $this->cartRepository->newCart($cart);
+            return new JsonResponse([],Response::HTTP_OK);
+        }
         $arr = [];
         foreach ($cart[0]['games'] as $game)
         {
