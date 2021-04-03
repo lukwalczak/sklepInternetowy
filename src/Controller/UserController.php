@@ -118,10 +118,13 @@ final class UserController extends AbstractController
         $username = $this->security->getUser()->getUsername();
         $user = $this->userRepository->getUserByEmail($username);
         $cart = $this->cartRepository->getUserCart($user);
-        if (!($cart)){
+        if (is_null($cart)){
             $cart = new Cart();
             $cart->setUser($user);
             $this->cartRepository->newCart($cart);
+            return new JsonResponse([],Response::HTTP_OK);
+        }
+        if(empty($cart)){
             return new JsonResponse([],Response::HTTP_OK);
         }
         $arr = [];
