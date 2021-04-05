@@ -101,6 +101,11 @@ final class UserController extends AbstractController
         $username = $this->security->getUser()->getUsername();
         $user = $this->userRepository->getUserByEmail($username);
         $cart = $user->getCart();
+        if (is_null($cart)){
+            $cart = new Cart();
+            $cart->setUser($user);
+            $this->cartRepository->newCart($cart);
+        }
         foreach ($requestArray['games'] as $gameID)
         {
             $game = $this->gameRepository->getByID($gameID);
