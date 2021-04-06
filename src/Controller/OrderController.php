@@ -70,15 +70,4 @@ class OrderController
         }
         return new JsonResponse($arr,Response::HTTP_OK);
     }
-    /**
-     * @Route("/a",methods={"GET"})
-     */
-    public function getOrderss(): Response
-    {
-        $user = $this->security->getUser()->getUsername();
-        $id = $this->userRepository->getUserByEmail($user)->getId();
-        $orders = $this->orderRepository->getUserOrders($id);
-
-        return new JsonResponse($orders,Response::HTTP_OK);
-    }
 }
