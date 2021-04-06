@@ -80,4 +80,10 @@ class Cart
 
         return $this;
     }
+
+    public function flushCart(): self
+    {
+        $this->games->clear();
+        return $this;
+    }
 }

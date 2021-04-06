@@ -152,4 +152,16 @@ final class UserController extends AbstractController
         $this->cartRepository->newCart($cart);
         return new JsonResponse($cart,Response::HTTP_OK);
     }
+    /**
+     * @Route("/userData/cart/removeAll",methods={"DELETE"})
+     */
+    public function flushCart(): Response
+    {
+        $username = $this->security->getUser()->getUsername();
+        $user = $this->userRepository->getUserByEmail($username);
+        $cart = $user->getCart();
+        $cart->flushCart();
+        $this->cartRepository->newCart($cart);
+        return new JsonResponse($cart,Response::HTTP_OK);
+    }
 }
